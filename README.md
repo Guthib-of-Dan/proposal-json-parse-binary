@@ -34,10 +34,9 @@ new SyntaxError(message)    █████████████████�
 throw new SyntaxError()     ████████████████████████████    2793.4 ms
 ```
 
-### Intermediate string
-, but if only Latin — UTF-8.   
+### Intermediate string   
 When we receive 1X payload size and decode it — we have 2X (UTF8 if Latin chars) to 3X (UTF16 if has spec. chars) of payload in memory used for microseconds + increased Garbage Collector pressure.  
-Payload can be malformed, but to find this out we need incrementally check it — job for JSON.parse, so we would rather skip the string completely, identify problems early and contribute application's endurance under high load.
+Payload can be malformed, but to find this out we need to incrementally check it — job for JSON.parse, so we would rather skip the string completely, identify problems early and contribute to application's endurance under high load.
 
 ---
 > 4MB here mean that certain symbol was repeated 4\*1024\*1024 times

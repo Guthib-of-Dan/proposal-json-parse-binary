@@ -1,4 +1,5 @@
-# template-for-proposals
+> README is in progress. Go look at GitHub Action CI "demonstration" run for now.
+# JSON.parseBinary
 
 A repository template for ECMAScript proposals.
 

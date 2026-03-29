@@ -1,0 +1,20 @@
+name: Demonstration
+on: push
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '25.0.0'
+      - uses: oven-sh/setup-bun@v2
+      - name: Install JS dependencies
+        run: bun install
+      - name: JSON.parse use-cases
+        run: bun run demo:json
+      - name: SyntaxError vs proposed return value
+        run: bun run demo:errors
+      - name: Overhead of intermediate strings
+        run: bun run demo:decoding

@@ -1,23 +1,27 @@
 {
   "private": true,
-  "name": "template-for-proposals",
+  "name": "proposal-json-parse-binary",
   "description": "A repository template for ECMAScript proposals.",
   "scripts": {
     "start": "npm run build-loose -- --watch",
     "build": "npm run build-loose -- --strict",
-    "build-loose": "node -e 'fs.mkdirSync(\"build\", { recursive: true })' && ecmarkup --load-biblio @tc39/ecma262-biblio --verbose spec.emu build/index.html --lint-spec"
+    "build-loose": "node -e 'fs.mkdirSync(\"build\", { recursive: true })' && ecmarkup --load-biblio @tc39/ecma262-biblio --verbose spec.emu build/index.html --lint-spec",
+    "demo:errors": "node demo/errors.mjs",
+    "demo:decoding": "node demo/decoding.mjs",
+    "demo:json": "node demo/json-parse.mjs",
+    "demo:all": "bun run demo:errors && bun run demo:decoding && bun run demo:json"
   },
-  "homepage": "https://github.com/tc39/template-for-proposals#readme",
+  "homepage": "https://github.com/Guthib-of-Dan/proposal-json-parse-binary#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tc39/template-for-proposals.git"
+    "url": "git+https://github.com/Guthib-of-Dan/proposal-json-parse-binary.git"
   },
   "license": "MIT",
   "devDependencies": {
     "@tc39/ecma262-biblio": "^2.1.2895",
-    "ecmarkup": "^21.3.0",
-    "jsdom": "^26.1.0",
-    "parse5-html-rewriting-stream": "^7.1.0",
+    "ecmarkup": "^24.0.0",
+    "jsdom": "^29.0.1",
+    "parse5-html-rewriting-stream": "^8.0.0",
     "tmp": "^0.2.3"
   },
   "engines": {

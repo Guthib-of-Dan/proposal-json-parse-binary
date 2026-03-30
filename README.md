@@ -1,4 +1,3 @@
-> README is in progress. Go look at GitHub Action CI "demonstration" run for now.
 # JSON.parseBinary
 
 ## Status

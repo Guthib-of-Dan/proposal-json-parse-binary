@@ -94,7 +94,8 @@ Results of [Parsing benchmark](./demo/json-parse.mjs)
 
   
   These benchmarks demonstate that throwing SyntaxError slows down the application up to 3 times.
-  In "wasted decode" case we spent 645ms (>2ms for each iteration) compared to "error@start" with literally no benefit. It would be better to validate binary payload and parse incrementally.
+  In "wasted decode" case we spent 645ms (>2ms for each iteration) compared to "error@start" with literally no benefit.
+  It would be better to validate binary payload and parse incrementally.
 ```
 
 ### Initial buffer stays in memory

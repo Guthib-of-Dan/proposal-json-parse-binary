@@ -248,7 +248,7 @@ buffer.detach(); // done with raw bytes
 // process result.value
 ```
 
-If you want a one-liner that does both, write a local wrapper. Proposing that wrapper as a global is what gets proposals cancelled — see [JSON.safeParse](https://github.com/nicolo-ribaudo/tc39-proposal-json-safeParse), which was rejected for being too opinionated about error handling.
+If you want a one-liner that does both, write a local wrapper. Proposing that wrapper as a global is what gets proposals cancelled.
 
 ---
 

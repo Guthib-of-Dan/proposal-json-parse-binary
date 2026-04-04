@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "proposal-json-parse-binary",
-  "description": "A repository template for ECMAScript proposals.",
+  "description": "TC39 proposal to add JSON.parseBinary utility",
   "scripts": {
     "start": "npm run build-loose -- --watch",
     "build": "npm run build-loose -- --strict",

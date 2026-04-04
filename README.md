@@ -9,6 +9,12 @@ Stage: 0
 ## Problem
 
 Every JSON parsing operation in a JavaScript HTTP server / HTTP request (like Fetch API) follows this pipeline:
+```
+network bytes (ArrayBuffer / Uint8Array)
+  → string = TextDecoder.decode()   — allocates a new JS string
+  → JSON.parse(string)              — parses, throws SyntaxError on failure
+  → object
+```
 Both steps carry hidden costs that compound at scale.
 
 ### SyntaxError

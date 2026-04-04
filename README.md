@@ -11,9 +11,6 @@ Stage: 0
 Every JSON parsing operation in a JavaScript HTTP server / HTTP request (like Fetch API) follows this pipeline:
 Both steps carry hidden costs that compound at scale.
 
-![Pipeline svg](./demo/pipeline.svg)
-
-
 ### SyntaxError
 
 An `Error` instance in JavaScript generates a stack trace with significant overhead — solely for debugging. But in the context of network requests we cannot force the correctness of the payload, so we have nothing to debug. `SyntaxError` provides no advantage over a simple string message, yet consumes more memory and CPU time to generate.
@@ -131,6 +128,9 @@ interface JSON {
 `JSON.parseBinary` accepts SharedArrayBuffer and parses it as an ordinary one, without any "copying for the sake of atomicity".
 
 ## What changes
+
+### Pipeline of network bytes
+![pipeline](./demo/pipeline.svg)
 
 ### Fetch API — before
 

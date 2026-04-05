@@ -101,7 +101,7 @@ process.stdout.write('                                              \r');
 
 // ─── wall time ─────────────────────────────────────────────────────────────
 //
-// Fixed scale: 10 000 ms ceiling so bars are comparable across runs.
+// Fixed scale: 12 000 ms ceiling so bars are comparable across runs.
 // (unconstrained is faster, capped is slower — same ruler for both)
 
 const WALL_SCALE = 12_000;
@@ -151,17 +151,15 @@ renderBar({
   label: 'ASCII  peak heap',
   value: ascii.peakMB,
   max:   HEAP_SCALE,
-  unit:  'ms',   // renderBar only supports ms/s — badge carries the real unit
+  unit:  'MB',
   good:  true,
-  badge: `${ascii.peakMB} MB`,
 });
 renderBar({
   label: 'Mixed  peak heap',
   value: mixed.peakMB,
   max:   HEAP_SCALE,
-  unit:  'ms',
+  unit:  'MB',
   good:  false,
-  badge: `${mixed.peakMB} MB`,
 });
 
 note(`Scale: ${HEAP_SCALE} MB. Fixed across runs — bars are directly comparable.`);

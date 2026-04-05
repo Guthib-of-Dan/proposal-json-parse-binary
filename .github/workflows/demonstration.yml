@@ -18,3 +18,5 @@ jobs:
         run: bun run demo:errors
       - name: Overhead of intermediate strings
         run: bun run demo:decoding
+      - name: Memory usage with intermediate string
+        run: bun run demo:gc-strings

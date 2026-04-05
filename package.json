@@ -9,6 +9,7 @@
     "demo:errors": "node demo/errors.mjs",
     "demo:decoding": "node demo/decoding.mjs",
     "demo:json": "node demo/json-parse.mjs",
+    "demo:gc-strings": "node --expose-gc demo/gc-strings.mjs && node --max-old-space-size=25 --expose-gc demo/gc-strings.mjs",
     "demo:all": "bun run demo:errors && bun run demo:decoding && bun run demo:json"
   },
   "homepage": "https://github.com/Guthib-of-Dan/proposal-json-parse-binary#readme",
@@ -19,6 +20,7 @@
   "license": "MIT",
   "devDependencies": {
     "@tc39/ecma262-biblio": "^2.1.2895",
+    "@types/node": "^25.5.2",
     "ecmarkup": "^24.0.0",
     "jsdom": "^29.0.1",
     "parse5-html-rewriting-stream": "^8.0.0",

@@ -70,9 +70,7 @@ export function renderBar({ label, value, max, unit = 'ms', badge = '', good }) 
                : good === false ? red(barStr)
                : gray(barStr);
 
-  const valStr = unit === 's'
-    ? lpad(value.toFixed(3) + ' s', 9)
-    : lpad(value.toFixed(1) + ' ms', 11);
+  const valStr = lpad(value.toFixed(unit == "ms" ? 3 : 1) + ' ' + unit, 9)
 
   const badgeStr = badge ? `  ${dim(badge)}` : '';
   console.log(`  ${pad(label, LABEL_W)}  ${bar}  ${bold(valStr)}${badgeStr}`);

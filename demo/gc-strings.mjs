@@ -100,24 +100,30 @@ const mixed = runLoop(mixedPayload);
 process.stdout.write('                                              \r');
 
 // ─── wall time ─────────────────────────────────────────────────────────────
+//
+// Fixed scale: 10 000 ms ceiling so bars are comparable across runs.
+// (unconstrained is faster, capped is slower — same ruler for both)
+
+const WALL_SCALE = 10_000;
+const HEAP_SCALE = 128; // MB — frames the unconstrained 110+ MB result
 
 section('Wall time', `${ITERATIONS.toLocaleString()} decode iterations`);
 
-const maxWall = Math.max(ascii.wall, mixed.wall);
 renderBar({
   label: 'ASCII (Latin-1 path)',
   value: ascii.wall,
-  max:   maxWall,
+  max:   WALL_SCALE,
   good:  true,
 });
 renderBar({
   label: 'Mixed (UTF-16 upgrade)',
   value: mixed.wall,
-  max:   maxWall,
+  max:   WALL_SCALE,
   good:  false,
   badge: `${(mixed.wall / ascii.wall).toFixed(2)}× slower`,
 });
 
+note(`Scale: ${WALL_SCALE.toLocaleString()} ms. Fixed across runs for comparison.`);
 note(`One emoji near the end forces V8 to re-encode the entire string mid-decode.`);
 
 // ─── heap at handler exit ──────────────────────────────────────────────────
@@ -141,23 +147,24 @@ stat('Mixed  string retained', `${mixed.retainedMB} MB`,      { color: 'red' });
 
 divider();
 
-const maxPeak = Math.max(ascii.peakMB, mixed.peakMB, 1);
 renderBar({
   label: 'ASCII  peak heap',
   value: ascii.peakMB,
-  max:   maxPeak,
-  unit:  'MB total',
+  max:   HEAP_SCALE,
+  unit:  'ms',   // renderBar only supports ms/s — badge carries the real unit
   good:  true,
+  badge: `${ascii.peakMB} MB`,
 });
 renderBar({
   label: 'Mixed  peak heap',
   value: mixed.peakMB,
-  max:   maxPeak,
-  unit:  'MB total',
+  max:   HEAP_SCALE,
+  unit:  'ms',
   good:  false,
+  badge: `${mixed.peakMB} MB`,
 });
 
-note(`Bar lengths show relative heap size. Numeric value is MB, not ms.`);
+note(`Scale: ${HEAP_SCALE} MB. Fixed across runs — bars are directly comparable.`);
 
 // ─── recovery ──────────────────────────────────────────────────────────────
 

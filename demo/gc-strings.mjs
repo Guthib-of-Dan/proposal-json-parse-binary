@@ -104,7 +104,7 @@ process.stdout.write('                                              \r');
 // Fixed scale: 10 000 ms ceiling so bars are comparable across runs.
 // (unconstrained is faster, capped is slower — same ruler for both)
 
-const WALL_SCALE = 10_000;
+const WALL_SCALE = 12_000;
 const HEAP_SCALE = 128; // MB — frames the unconstrained 110+ MB result
 
 section('Wall time', `${ITERATIONS.toLocaleString()} decode iterations`);

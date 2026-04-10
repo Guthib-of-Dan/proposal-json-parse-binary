@@ -1,6 +1,11 @@
 // cross-platform polyfill for co-proposal
 ArrayBuffer.prototype.detach = function() {this.transfer(0);}
 
+// if you want more precise results for NodeJS, use this instead
+//import {setFlagsFromString} from "node:v8"
+//setFlagsFromString("--allow-natives-syntax")
+//ArrayBuffer.prototype.detach = new Function("%ArrayBufferDetach(this)")
+
 var decoder = new TextDecoder();
 /*Just a polyfill. Real implementation would have no try-catch, no TextDecoder and would be on the JS engine side, not JS code itself*/
 JSON.parseBinary = function(input) {

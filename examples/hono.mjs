@@ -18,7 +18,7 @@ app.post('/data', async (context) => {
     return context.json({ error: result.message }, 400);
   }
 
-  return context.json({ received: result.value });
+  return context.json({ received: result.value.length });
 });
 
 export default app;

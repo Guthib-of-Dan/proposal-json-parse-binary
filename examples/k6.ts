@@ -4,7 +4,9 @@
 
 import http from "k6/http"
 import type {Options} from "k6/options"
-var data = new ArrayBuffer(1024*1024)
+
+var data = JSON.stringify(new Array(10000).fill({txt1: "LARGE STRING !!!!!!!!!!!!!", id: 100000, nestedObj: {data: "STRING!!!!!!!"}}));
+console.log("payload size", data.length)
 export const options: Options = {
   duration: "10s",
   vus: 10

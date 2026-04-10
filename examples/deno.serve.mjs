@@ -18,5 +18,5 @@ Deno.serve({ port: 3000 }, async (req) => {
     return Response.json({ error: result.message }, { status: 400 });
   }
 
-  return Response.json({ received: result.value });
-});
+  return Response.json({ received: result.value.length })
+})

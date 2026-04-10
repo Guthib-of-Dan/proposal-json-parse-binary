@@ -282,42 +282,67 @@ async function requestEndpointA() {
 }
 ```
 
-### node:http — before
+### node:http
+This example doesn't use Buffer.concat, because it is less efficient overall, copies all buffers into
+one while all chunks are alive  leading to 2X payload size simultaneously + individual chunks stay longer in memory,
+because they would be kept until the end as an array for "concat"
+#### Before
 
 ```javascript
 server.on('request', async (req, res) => {
-    const chunks = [];
-    for await (const chunk of req) chunks.push(chunk);
-    const body = Buffer.concat(chunks);
-    const intermediateString = body.toString(); // wasted memory + CPU
-    let result;
-    try {
-        result = JSON.parse(intermediateString);
-    } catch (err) {
-        res.writeHead(400).end(err.message);
-        return;
-    }
-    // process result
+  body = Buffer.allocUnsafe(Number(req.headers["content-length"]));
+  var offset = 0;
+  await new Promise((resolve) => {
+    req.on("data", (chunk) => {
+      body.set(chunk, offset);
+      offset += chunk.byteLength;
+    })
+    req.once("end", resolve)
+  })
+
+  let result;
+  try {
+    result = JSON.parse(body.toString());
+  } catch (err) {
+    res.writeHead(400).end(err.message);
+    return;
+  }
+  // mark for GC
+  body = undefined;
+
+  // body sits in memory until GC decides to collect it
+  handleResult(result);
 });
 ```
 
-### node:http — after
-
+#### After
 ```javascript
 server.on('request', async (req, res) => {
-    const chunks = [];
-    for await (const chunk of req) chunks.push(chunk);
-    const body = Buffer.concat(chunks);
-    const parseResult = JSON.parseBinary(body);
-    if (!parseResult.ok) {
-        res.writeHead(400).end(parseResult.message);
-        return;
-    }
-    const result = parseResult.value;
-    // handle result
+  // memory-mapped buffer, doesn't consume whole memory when initialised.
+  const body = Buffer.allocUnsafeSlow(Number(req.headers["content-length"]));
+  var offset = 0;
+  await new Promise((resolve) => {
+    req.on("data", (chunk) => {
+      // write to memory-mapped data (activate partially) and detach immediately
+      body.set(chunk, offset);
+      offset += chunk.byteLength;
+      chunk.buffer.detach();
+    })
+    req.once("end", resolve)
+  })
+
+  // co-proposal, does not detach internally
+  const parseResult = JSON.parseBinary(body);
+
+  body.buffer.detach(); // body gets released after parse
+
+  if (!parseResult.ok) {
+    res.writeHead(400).end(parseResult.message);
+    return;
+  }
+  handleResult(parseResult.value);
 });
 ```
-
 ---
 
 ## Design decisions ("why not X")

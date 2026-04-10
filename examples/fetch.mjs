@@ -32,7 +32,7 @@ async function fetchJson(url, options = {}) {
 
 // ── usage ─────────────────────────────────────────────────────────────────
 
-const result = await fetchJson('https://api.example.com/data');
+const result = await fetchJson('https://jsonplaceholder.typicode.com/todos/1');
 
 if (!result.ok) {
   console.error('parse failed:', result.message);

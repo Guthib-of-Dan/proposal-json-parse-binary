@@ -37,7 +37,7 @@ router.post('/data', async (ctx) => {
     return;
   }
 
-  ctx.body = { received: result.value };
+  ctx.body = { received: result.value.length };
 });
 
 app.use(router.routes()).use(router.allowedMethods());

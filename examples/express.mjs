@@ -35,7 +35,7 @@ app.post('/', async (req, res) => {
     return;
   }
 
-  res.json({ received: result.value });
+  res.json({ received: result.value.length });
 });
 
 app.listen(3000);

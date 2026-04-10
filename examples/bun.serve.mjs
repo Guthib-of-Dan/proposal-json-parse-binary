@@ -24,6 +24,6 @@ Bun.serve({
       return Response.json({ error: result.message }, { status: 400 });
     }
 
-    return Response.json({ received: result.value });
+    return Response.json({ received: result.value.length });
   },
 });

@@ -19,12 +19,12 @@ if (req.method !== 'POST') {
 
   // memory-mapped virtual buffer, gets activated incrementally
   // Buffer.allocUnsafe should be avoided for the reasons above
-  let data = Buffer.allocUnsafeSlow(Number(req.headers["content-length"]));
+  let body = Buffer.allocUnsafeSlow(Number(req.headers["content-length"]));
   let offset = 0;
   await new Promise((resolve) => {
     req.on("data", (chunk) => {
       // write to memory-mapped data and detach immediately, so "data" + "chunks" don't consume more than "1X + 1 chunk" memory
-      data.set(chunk, offset);
+      body.set(chunk, offset);
       offset += chunk.byteLength;
       chunk.buffer.detach();
     })
@@ -32,10 +32,9 @@ if (req.method !== 'POST') {
   })
   // use final buffer and detach it.
   const result = JSON.parseBinary(body);
-  data.buffer.detach();
-
   // raw bytes no longer needed — release the backing store immediately
-  body.detach();
+  body.buffer.detach();
+
 
   if (!result.ok) {
     res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -44,7 +43,7 @@ if (req.method !== 'POST') {
   }
 
   res.writeHead(200, { 'Content-Type': 'application/json' });
-  res.end(JSON.stringify({ received: result.value }));
+  res.end(JSON.stringify({ received: result.value.length }))
 });
 
 server.listen(3000);

@@ -326,15 +326,16 @@ server.on('request', async (req, res) => {
       // write to memory-mapped data (activate partially) and detach immediately
       body.set(chunk, offset);
       offset += chunk.byteLength;
+      // co-proposal, clears memory manually
       chunk.buffer.detach();
     })
     req.once("end", resolve)
   })
 
-  // co-proposal, does not detach internally
   const parseResult = JSON.parseBinary(body);
 
-  body.buffer.detach(); // body gets released after parse
+  // co-proposal, clear body after parsing
+  body.buffer.detach();
 
   if (!parseResult.ok) {
     res.writeHead(400).end(parseResult.message);

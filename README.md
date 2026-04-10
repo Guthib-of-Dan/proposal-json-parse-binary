@@ -234,6 +234,8 @@ interface JSON {
 ### Pipeline of network bytes
 ![pipeline](./demo/pipeline.svg)
 
+### [Click to see all examples](./examples/)
+
 ### Fetch API — before
 
 ```typescript

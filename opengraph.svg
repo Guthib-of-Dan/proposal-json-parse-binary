@@ -1,0 +1,65 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <pattern id="bg-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1D9E75" stroke-width="0.5"/>
+  </pattern>
+  <style>@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&amp;family=Inter:wght@400;500;700&amp;display=swap');</style>
+</defs>
+
+<rect width="1280" height="640" fill="#0E1117"/>
+<rect width="1280" height="640" fill="url(#bg-grid)" opacity="0.04"/>
+<rect x="0" y="0" width="6" height="640" fill="#1D9E75"/>
+<rect x="0" y="0" width="1280" height="3" fill="#1D9E75"/>
+<rect x="0" y="637" width="1280" height="3" fill="#1D9E75"/>
+
+<rect x="60" y="50" width="180" height="30" rx="15" fill="#0F3D2E" stroke="#1D9E75" stroke-width="1"/>
+<text x="150" y="71" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="13" font-weight="500" fill="#1D9E75">TC39 · Stage 0</text>
+
+<text y="178" font-family="'JetBrains Mono','Courier New',monospace" font-size="68" font-weight="600" letter-spacing="-1">
+  <tspan x="60" fill="#FFFFFF">JSON</tspan><tspan fill="#1D9E75" font-weight="400">.</tspan><tspan fill="#5DCAA5">parseBinary</tspan>
+</text>
+<text x="60" y="222" font-family="'Inter',system-ui,sans-serif" font-size="22" font-weight="400" fill="#6B7280">Parse JSON directly from binary buffers</text>
+
+<rect x="60" y="256" width="660" height="1" fill="#1a2e26"/>
+
+<rect x="60" y="272" width="660" height="162" rx="10" fill="#0A1A14" stroke="#1a3d2e" stroke-width="1"/>
+<text x="88" y="300" font-family="'JetBrains Mono','Courier New',monospace" font-size="14" fill="#4B6B60">// before, throws error</text>
+<text x="88" y="321" font-family="'JetBrains Mono','Courier New',monospace" font-size="14">
+  <tspan fill="#9FE1CB">const result</tspan><tspan fill="#6B7280"> = </tspan><tspan fill="#9FE1CB">JSON</tspan><tspan fill="#6B7280">.parse(new </tspan><tspan fill="#EF9F27">TextDecoder</tspan><tspan fill="#6B7280">().decode(buf));</tspan>
+</text>
+<text x="88" y="352" font-family="'JetBrains Mono','Courier New',monospace" font-size="14" fill="#4B6B60">// after, returns { ok, value, message }</text>
+<text x="88" y="373" font-family="'JetBrains Mono','Courier New',monospace" font-size="14">
+  <tspan fill="#9FE1CB">const result</tspan><tspan fill="#6B7280"> = </tspan><tspan fill="#5DCAA5">JSON.parseBinary</tspan><tspan fill="#6B7280">(buf);</tspan>
+</text>
+<text x="88" y="404" font-family="'JetBrains Mono','Courier New',monospace" font-size="14">
+  <tspan fill="#6B7280">buf.</tspan><tspan fill="#EF9F27">detach</tspan><tspan fill="#6B7280">();</tspan><tspan fill="#4B6B60">  // co-proposal, release backing store immediately</tspan>
+</text>
+
+<rect x="760" y="272" width="210" height="88" rx="8" fill="#0A1A14" stroke="#1a3d2e" stroke-width="1"/>
+<text x="865" y="310" text-anchor="middle" font-family="'JetBrains Mono','Courier New',monospace" font-size="34" font-weight="600" fill="#5DCAA5">500×</text>
+<text x="865" y="334" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="13" fill="#4B6B60">faster than SyntaxError</text>
+<text x="865" y="351" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="12" fill="#2d4d40">1M iterations · errors.mjs</text>
+
+<rect x="990" y="272" width="250" height="88" rx="8" fill="#0A1A14" stroke="#1a3d2e" stroke-width="1"/>
+<text x="1115" y="310" text-anchor="middle" font-family="'JetBrains Mono','Courier New',monospace" font-size="34" font-weight="600" fill="#5DCAA5">78×</text>
+<text x="1115" y="334" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="13" fill="#4B6B60">decode penalty, 4-byte chars</text>
+<text x="1115" y="351" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="12" fill="#2d4d40">vs ASCII · decoding.mjs</text>
+
+<rect x="760" y="378" width="480" height="50" rx="8" fill="#0A1A14" stroke="#1a3d2e" stroke-width="1"/>
+<text x="775" y="398" font-family="'JetBrains Mono','Courier New',monospace" font-size="13">
+  <tspan fill="#4B6B60">parseBinary(</tspan><tspan fill="#9FE1CB">input</tspan><tspan fill="#6B7280">: </tspan><tspan fill="#EF9F27">ArrayBufferLike | Uint8Array</tspan><tspan fill="#6B7280">)</tspan>
+</text>
+<text x="775" y="418" font-family="'JetBrains Mono','Courier New',monospace" font-size="13">
+  <tspan fill="#6B7280">  → { </tspan><tspan fill="#5DCAA5">ok</tspan><tspan fill="#6B7280">: </tspan><tspan fill="#EF9F27">true</tspan><tspan fill="#6B7280">, value } | { </tspan><tspan fill="#5DCAA5">ok</tspan><tspan fill="#6B7280">: </tspan><tspan fill="#E24B4A">false</tspan><tspan fill="#6B7280">, message }</tspan>
+</text>
+
+<rect x="760" y="446" width="480" height="88" rx="8" fill="#0C1F18" stroke="#1a3d2e" stroke-width="1"/>
+<text x="775" y="468" font-family="'Inter',system-ui,sans-serif" font-size="13" fill="#4B6B60">eliminates <tspan font-weight="500" fill="#9FE1CB">intermediate string</tspan> allocation</text>
+<text x="775" y="488" font-family="'Inter',system-ui,sans-serif" font-size="13" fill="#4B6B60">no <tspan font-weight="500" fill="#9FE1CB">TextDecoder</tspan> · no <tspan font-weight="500" fill="#9FE1CB">SyntaxError</tspan> · no try-catch</text>
+<text x="775" y="508" font-family="'Inter',system-ui,sans-serif" font-size="13" fill="#4B6B60">compose freely with <tspan font-weight="500" fill="#9FE1CB">ArrayBuffer.prototype.detach()</tspan></text>
+<text x="775" y="525" font-family="'Inter',system-ui,sans-serif" font-size="12" fill="#2d4d40">Node.js · Bun · Deno · Fastify · uWebSockets · Hono · Express</text>
+
+<line x1="60" y1="556" x2="1220" y2="556" stroke="#1a2e26" stroke-width="1"/>
+<text x="60" y="582" font-family="'Inter',system-ui,sans-serif" font-size="14" fill="#2d4d40">github.com/Guthib-of-Dan/<tspan font-weight="500" fill="#1D9E75">proposal-json-parse-binary</tspan></text>
+<text x="1220" y="582" text-anchor="end" font-family="'Inter',system-ui,sans-serif" font-size="14" fill="#2d4d40">TC39 Proposal · Stage 0 · 2026</text>
+</svg>

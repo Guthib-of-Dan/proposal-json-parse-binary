@@ -41,8 +41,8 @@
 <text x="865" y="351" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="12" fill="#2d4d40">1M iterations · errors.mjs</text>
 
 <rect x="990" y="272" width="250" height="88" rx="8" fill="#0A1A14" stroke="#1a3d2e" stroke-width="1"/>
-<text x="1115" y="310" text-anchor="middle" font-family="'JetBrains Mono','Courier New',monospace" font-size="34" font-weight="600" fill="#5DCAA5">78×</text>
-<text x="1115" y="334" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="13" fill="#4B6B60">decode penalty, 4-byte chars</text>
+<text x="1115" y="310" text-anchor="middle" font-family="'JetBrains Mono','Courier New',monospace" font-size="34" font-weight="600" fill="#5DCAA5">2x</text>
+<text x="1115" y="334" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="13" fill="#4B6B60">faster decoding for i18n JSON</text>
 <text x="1115" y="351" text-anchor="middle" font-family="'Inter',system-ui,sans-serif" font-size="12" fill="#2d4d40">vs ASCII · decoding.mjs</text>
 
 <rect x="760" y="378" width="480" height="50" rx="8" fill="#0A1A14" stroke="#1a3d2e" stroke-width="1"/>

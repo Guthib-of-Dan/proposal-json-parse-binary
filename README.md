@@ -346,6 +346,16 @@ server.on('request', async (req, res) => {
 ```
 ---
 
+## Relation to other proposals / discussions
+- [Comment inside NodeJS's codebase](https://github.com/nodejs/node/blob/main/lib/querystring.js#L472)
+  tells that try-catch blocks are not optimised up to V8 5.4 and still are not inlined, hurting performance.
+- [Stack Overflow discussion](https://stackoverflow.com/questions/29797946/handling-bad-json-parse-in-node-safely)
+  shows that unnecessary SyntaxError is a concern
+- [Memory leak in JSON.parse](https://github.com/nodejs/node/issues/35048) was resolved 6 years ago, but it used to occure only after invalid payload, which JSON.parseBinary is intended to be optimised for
+- [GitHub gist on `Error`](https://gist.github.com/thlorenz/1e534d5c4c58a84ea40a) mentions 450x performance penalty because of stack trace generation
+- [secure-json-parse by Fastify](https://github.com/fastify/secure-json-parse) exposes `safeParse` method, which cleverly "mutes" stack trace with `Error.stackTraceLimit = 0` call, surpassing all alternatives when parsing potentially invalid payloads. However, it deoptimises successful path and `throw + try-catch` problem still persists. `JSON.parseBinary` addresses relevant issues in a right way and is a [viable upgrade for various frameworks/tools](https://github.com/fastify/fastify/discussions/6625)
+- [Decoding/encoding discussion](https://github.com/whatwg/encoding/issues/343) mentioned the poor performance of TextDecoder and TextEncoder WHATWG APIs, compared to JS manual implementations and `node:buffer Buffer.toString() Buffer.from()`. In particular, this touches (node-fetch)[https://github.com/node-fetch/node-fetch/blob/8b3320d2a7c07bce4afc6b2bf6c3bbddda85b01f/src/body.js#L147], as it uses TextDecoder.
+
 ## Design decisions ("why not X")
 
 This section addresses specific alternative designs raised during community review. Each alternative was considered carefully; the choices below keep `JSON.parseBinary` a **single-purpose, synchronous, non-destructive** utility.
@@ -454,6 +464,12 @@ To reconstruct the key and value correctly, the parser must buffer partial strin
 The memory advantage of `JSON.parseBinary` comes entirely from parsing the full buffer in one pass — extracting only the final key/value strings without a full intermediate copy. Streaming breaks this invariant. The only way to avoid the copy is to parse the entire buffer at once, which is exactly what `JSON.parseBinary` does.
 
 ---
+
+### Why not add a `reviver` like in JSON.parse?
+In the [benchmarks](https://github.com/fastify/secure-json-parse?tab=readme-ov-file#benchmarks), conducted by `secure-json-parse`, reviver inflicted huge slowdowns. Apart from being easily replacable, each call creates another scope, handles another V8 Isolate - impractical for frequent usage.
+
+### Why extend `JSON.*` and not create new API like `new JSONDecoder().decode(buf)`
+Everything is possible. If not `JSON.parseBinary` than other option, but it has more meaning to be `JSON.parseBinary`. 
 
 ## Relation to `ArrayBuffer.prototype.detach()`
 

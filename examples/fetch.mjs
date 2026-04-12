@@ -4,26 +4,24 @@
 // directly. This avoids the response.json() path which internally does
 // TextDecoder.decode() + JSON.parse() and throws on invalid payloads.
 //
-// Detach is intentionally omitted on the error path: if the server
-// returned a non-JSON body you may still want to inspect the raw bytes
-// for debugging (e.g. log them or display an error message). Detach only
-// once you are certain the buffer is no longer needed.
+// Detach only once you are certain the buffer is no longer needed.
 
 import "./polyfill.mjs"
 async function fetchJson(url, options = {}) {
-  let response;
+  var response;
+  var body;
   try {
     response = await fetch(url, options);
+    body = await response.arrayBuffer();
   } catch (networkError) {
     // network failure — no buffer to detach
     return { ok: false, message: networkError.message };
   }
 
-  const buf    = await response.arrayBuffer();
-  const result = JSON.parseBinary(buf);
+  const result = JSON.parseBinary(body);
 
   if (result.ok) {
-    buf.detach(); // parsed successfully — raw bytes no longer needed
+    body.detach(); // parsed successfully — raw bytes no longer needed
   }
   // on failure: caller can still inspect buf if needed before detaching
 

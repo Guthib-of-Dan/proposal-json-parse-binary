@@ -11,15 +11,21 @@ import { request } from 'undici';
 import "./polyfill.mjs"
 
 async function getJson(url) {
-  const { body } = await request(url);
+  var body;
+  try {
+    const response = await request(url);
 
   // Collect the response body as an ArrayBuffer.
   // undici's body is a Readable, arrayBuffer() drains and concatenates.
-  const buf    = await body.arrayBuffer();
-  const result = JSON.parseBinary(buf);
+    body = await response.body.arrayBuffer();
+  } catch (err) {
+    // network error
+    return {ok:false, message: err.message}
+  }
+  const result = JSON.parseBinary(body);
 
   if (result.ok) {
-    buf.detach();
+    body.detach();
   }
 
   return result;

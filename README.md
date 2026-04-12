@@ -6,6 +6,11 @@ Author: Daniel Dyryl \<diril656@gmail.com\>
 
 Stage: 0
 
+## Want to summarise information below?
+[Look at the overview.md](./overview.md)
+
+All benchmarking results mentioned here are publicly available in GitHub Actions of this current repo.
+
 ## Problem
 
 Every JSON parsing operation in a JavaScript HTTP server / HTTP request (like Fetch API) follows this pipeline:

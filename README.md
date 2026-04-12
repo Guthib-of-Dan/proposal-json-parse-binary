@@ -46,9 +46,10 @@ throw new SyntaxError()     █████████████████�
 
 When we receive a 1× payload and decode it we have 2× (UTF-8 if Latin chars) to 3× (UTF-16 if any multi-byte chars) of the payload size in memory — held for microseconds with increased GC pressure.
 
-The payload may be malformed, but to discover this we must incrementally parse it — the job of `JSON.parse`. We would rather skip the intermediate string entirely, identify problems early and protect the application under high load.
+The payload may be malformed, but to discover this we must incrementally parse it — the job of `JSON.parse`. We would rather skip the intermediate string entirely, identify problems early and protect the application under high load. And this is totally doable, as according to [RFC 8259](https://datatracker.ietf.org/doc/html/rfc8259#section-8.1), JSON messages MUST be UTF-8
 
 Even if there is only one UTF-16 char in the string, it becomes twice as large in any case. If strings were parsed only one by one and inserted into the resulting structure, it would have MOST of the data UTF-8 and one 1 string UTF-16. This HUGELY improves performance of i18n services.
+
 
 ---
 

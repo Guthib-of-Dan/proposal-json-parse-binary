@@ -1,5 +1,7 @@
 # JSON.parseBinary
 The JSON.parseBinary proposal introduces a new static method to the global JSON object. It allows developers to parse JSON directly from binary data (Uint8Array, ArrayBuffer) without first converting it into a JavaScript string. It decodes only "value" strings from "key-value" pairs incrementally, what lets parse JSON and validate simultaneously. Unlike the traditional JSON.parse, this method returns a **result object** instead of throwing an exception, significantly improving performance and memory efficiency in high-load environments like HTTP servers.
+
+The main use-case is handling data, that comes to JS application from the outer world, like network communication or filesystem.
 ## The Core Problems
 
 The current workflow for parsing network data in JavaScript is:

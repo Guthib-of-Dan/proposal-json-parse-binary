@@ -361,6 +361,7 @@ server.on('request', async (req, res) => {
 - [GitHub gist on `Error`](https://gist.github.com/thlorenz/1e534d5c4c58a84ea40a) mentions 450x performance penalty because of stack trace generation
 - [secure-json-parse by Fastify](https://github.com/fastify/secure-json-parse) exposes `safeParse` method, which cleverly "mutes" stack trace with `Error.stackTraceLimit = 0` call, surpassing all alternatives when parsing potentially invalid payloads. However, it deoptimises successful path and `throw + try-catch` problem still persists. `JSON.parseBinary` addresses relevant issues in a right way and is a [viable upgrade for various frameworks/tools](https://github.com/fastify/fastify/discussions/6625)
 - [Decoding/encoding discussion](https://github.com/whatwg/encoding/issues/343) mentioned the poor performance of TextDecoder and TextEncoder WHATWG APIs, compared to JS manual implementations and `node:buffer Buffer.toString() Buffer.from()`. In particular, this touches (node-fetch)[https://github.com/node-fetch/node-fetch/blob/8b3320d2a7c07bce4afc6b2bf6c3bbddda85b01f/src/body.js#L147], as it uses TextDecoder.
+- [JSON.rawJSON](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/rawJSON), documentation of which was last updated in July 2025, proves that `JSON.*` API is not sealed for extension, as some people were speculating. If `rawJSON` and `isRawJSON` appeared, `parseBinary` can as well.
 
 ## Design decisions ("why not X")
 

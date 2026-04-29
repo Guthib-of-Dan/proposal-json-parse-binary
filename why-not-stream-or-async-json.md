@@ -3,10 +3,8 @@
 ## Quick links
 
 1) Parsing JSON in separate thread(s) directly into JS structures will not work. V8 has its instances (isolates), unaccessible from other threads [(source)](https://github.com/nodejs/node-v0.x-archive/issues/7543#issuecomment-42557977).
-2) Parsing JSON to BSON in separate thread(s), passing back to main thread + materializing is cumbersome and incurrs overhead from the context switching [(source)](https://github.com/nodejs/node-v0.x-archive/issues/7543#issuecomment-106088497)
+2) Parsing JSON to BSON in separate thread(s), passing back to main thread + materializing is cumbersome and incurs overhead from the context switching [(source)](https://github.com/nodejs/node-v0.x-archive/issues/7543#issuecomment-106088497)
 3) JSON payload is usually being acted on as a whole or has interdependent keys, so streaming provides no benefit [(source)](https://github.com/nodejs/node-v0.x-archive/issues/7543#issuecomment-93079273)
-
-5) 
 
 ## Why not async (`await JSON.parseBinary(buf)`)?
 
@@ -63,4 +61,3 @@ If you want to receive 5MB of JSON, parsing it chunk by chunk still leaves you w
 Unfortunately, interdependent keys (point 3 above) stand in the way. For such cases, you might want to create a WebSocket connection with several types of "events", holding these key-value pairs. One connection can hold 1 database transaction, so changes are revertable. This way we receive data efficiently and STILL can parse it with JSON.parseBinary.
 
 What is more to it, `ArrayBuffer.prototype.detach` (co-proposal) can immediately clear the initial buffer after parsing, so spike lasts for milliseconds and disappears.
----

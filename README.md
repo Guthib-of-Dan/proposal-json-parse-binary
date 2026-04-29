@@ -362,6 +362,8 @@ server.on('request', async (req, res) => {
 - [secure-json-parse by Fastify](https://github.com/fastify/secure-json-parse) exposes `safeParse` method, which cleverly "mutes" stack trace with `Error.stackTraceLimit = 0` call, surpassing all alternatives when parsing potentially invalid payloads. However, it deoptimises successful path and `throw + try-catch` problem still persists. `JSON.parseBinary` addresses relevant issues in a right way and is a [viable upgrade for various frameworks/tools](https://github.com/fastify/fastify/discussions/6625)
 - [Decoding/encoding discussion](https://github.com/whatwg/encoding/issues/343) mentioned the poor performance of TextDecoder and TextEncoder WHATWG APIs, compared to JS manual implementations and `node:buffer Buffer.toString() Buffer.from()`. In particular, this touches (node-fetch)[https://github.com/node-fetch/node-fetch/blob/8b3320d2a7c07bce4afc6b2bf6c3bbddda85b01f/src/body.js#L147], as it uses TextDecoder.
 - [JSON.rawJSON](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/rawJSON), documentation of which was last updated in July 2025, proves that `JSON.*` API is not sealed for extension, as some people were speculating. If `rawJSON` and `isRawJSON` appeared, `parseBinary` can as well.
+- [This NodeJS discussion](https://github.com/nodejs/node-v0.x-archive/issues/7543#issuecomment-44143636) has already reached certain conclusion that parsing JSON straight from utf-8 buffer is faster and not that harder.
+- [This commit in i-json parser](https://github.com/bjouhier/i-json/commit/090d7be4db670e28923e75976fdd9cfc356bfeba) shows, that implementation can parse raw Buffer, so the implementation, which skipped intermediate strings, DID exist. Furthermore, based on [this comment](https://github.com/nodejs/node-v0.x-archive/issues/7543#issuecomment-44471279), parser would be faster, if was native within V8.
 
 ## Design decisions ("why not X")
 
@@ -429,54 +431,15 @@ The second form is strictly cleaner. Adding a transfer list gives the illusion o
 
 ---
 
-### Why not async (`await JSON.parseBinary(buf)`)?
+### Why not streaming parser or an async non-blocking variant?
 
-For browser use-cases — avoiding blocking the main thread on a large JSON payload — an async variant seems appealing. In practice it creates more problems than it solves.
-
-**Option A — chunked parsing on the main thread.** This requires saving incremental parser state between ticks. But JSON string values can span chunk boundaries; partial multi-byte UTF-8 sequences (e.g. a 4-byte emoji split across chunks) require buffering and re-encoding. Parsing half the buffer does not allow detaching the first half — the entire buffer remains referenced until `done`. Memory pressure increases, not decreases.
-
-**Option B — offload to a Worker.** This requires copying or transferring the buffer, serialising the result back across the thread boundary. In C++ addons no one touches JS part when operating inside `libuv` worker threads due to V8 likely moving JS heap structures for different reason (likely reduce fragmentation). Any intrusion into V8 heap from another thread results in undefined behaviour. If we use node:worker\_threads and transfer/copy data to other thread, we can parse json there BUT, when returning it back - copy again. V8 heap of js 2 js threads don't overlap. For most payloads under ~50 MB (or even more), synchronous parsing is faster end-to-end.
-
-**Why it's not needed in practice.** Even a 4 MB JSON payload parses in ~25 ms on a mid-range device. The web's rendering frame is 16 ms; long-running parses already block regardless of async API shape. The alternative to making this function async is making your environment multithreaded using a Worker with `postMessage(buffer, [buffer])` — explicit, composable, and already available.
-
-```javascript
-// what the async case actually looks like today — already ergonomic
-const worker = new Worker('parse-worker.js');
-worker.postMessage(buffer, [buffer]); // transfers ownership
-// but actually sending that parsed JSON back means copying - benefit vanishes
-worker.onmessage = ({ data }) => {
-    if (!data.ok) { /* handle */ }
-    // process data.value
-};
-```
-
-`JSON.parseBinary` is synchronous. If you need async, transfer buffer to a Worker, parse there and use there.
-
----
-
-### Why not a streaming chunk parser (`JSON.binaryParser()`)?
-
-A factory-based API — `const parse = JSON.binaryParser(); parse(chunk1); parse(chunk2); ...` — appears to solve large payloads. It does not work without sacrificing the memory advantage.
-
-Consider chunks that split in the middle of a string value:
-
-```
-chunk 1: { "key": "value that is not fu
-chunk 2: ll yet, and contains 😀 here
-chunk 3: , finally done" }
-```
-
-To reconstruct the key and value correctly, the parser must buffer partial strings across chunks — copying bytes into internal state. If chunk 2 introduces a multi-byte character (the emoji), the already-buffered Latin-1 string from chunk 1 must be re-encoded as UTF-16 and concatenated. By the time chunk 3 arrives, the intermediate state may be larger than the original buffer.
-
-The memory advantage of `JSON.parseBinary` comes entirely from parsing the full buffer in one pass — extracting only the final key/value strings without a full intermediate copy. Streaming breaks this invariant. The only way to avoid the copy is to parse the entire buffer at once, which is exactly what `JSON.parseBinary` does.
-
----
+This discussion lasts at least twelve years, but [you can click here to see the formed answer](./why-not-stream-or-async-json.md)
 
 ### Why not add a `reviver` like in JSON.parse?
 In the [benchmarks](https://github.com/fastify/secure-json-parse?tab=readme-ov-file#benchmarks), conducted by `secure-json-parse`, reviver inflicted huge slowdowns. Apart from being easily replacable, each call creates another scope, handles another V8 Isolate - impractical for frequent usage.
 
 ### Why extend `JSON.*` and not create new API like `new JSONDecoder().decode(buf)`
-Everything is possible. If not `JSON.parseBinary` than other option, but it has more meaning to be `JSON.parseBinary`. 
+JSON.rawJSON proves that JSON.* api is not sealed, contrary to a popular belief.
 
 ## Relation to `ArrayBuffer.prototype.detach()`
 

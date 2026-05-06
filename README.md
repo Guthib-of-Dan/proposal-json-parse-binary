@@ -4,7 +4,9 @@
 
 Author: Daniel Dyryl \<diril656@gmail.com\>
 
-Stage: 0
+Stage: -1
+
+# This proposal was rejected by the committee for the reason of it helping in rare cases and saving microseconds - milliseconds of time.
 
 ## Want to summarise information below?
 [Look at the overview.md](./overview.md)

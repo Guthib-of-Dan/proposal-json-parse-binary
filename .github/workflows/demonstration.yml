@@ -20,3 +20,5 @@ jobs:
         run: bun run demo:decoding
       - name: Memory usage with intermediate string
         run: bun run demo:gc-strings
+      - name: Compare await new Response(buffer).json() and JSON.parse(buffer.toString())
+        run: bun run demo:against-response

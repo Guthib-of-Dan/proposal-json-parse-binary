@@ -10,7 +10,8 @@
     "demo:decoding": "node demo/decoding.mjs",
     "demo:json": "node demo/json-parse.mjs",
     "demo:gc-strings": "node --expose-gc demo/gc-strings.mjs && node --max-old-space-size=25 --expose-gc demo/gc-strings.mjs",
-    "demo:all": "bun run demo:errors && bun run demo:decoding && bun run demo:json"
+    "demo:against-response": "node demo/against-ResponseAPI.mjs && deno demo/against-ResponseAPI.mjs && bun demo/against-ResponseAPI.mjs",
+    "demo:all": "bun run demo:errors && bun run demo:decoding && bun run demo:json && bun run demo:against-response"
   },
   "homepage": "https://github.com/Guthib-of-Dan/proposal-json-parse-binary#readme",
   "repository": {

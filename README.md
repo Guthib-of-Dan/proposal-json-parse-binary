@@ -4,12 +4,12 @@
 
 Author: Daniel Dyryl \<diril656@gmail.com\>
 
-Stage: -1
-
-# This proposal was rejected by the committee for the reason of it helping in rare cases and saving microseconds - milliseconds of time.
+Stage: 0
 
 ## Want to summarise information below?
 [Look at the overview.md](./overview.md)
+
+This proposal is oriented on performance improvements. Not 10X faster, but visible under load.
 
 All benchmarking results mentioned here are publicly available in GitHub Actions of this current repo.
 

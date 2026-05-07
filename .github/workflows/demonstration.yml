@@ -10,6 +10,7 @@ jobs:
         with:
           node-version: '25.0.0'
       - uses: oven-sh/setup-bun@v2
+      - uses: denoland/setup-deno@v2
       - name: Install JS dependencies
         run: bun install
       - name: JSON.parse use-cases
